@@ -3,10 +3,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     java
     idea
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "nexus.slime"
-version = "3.5"
+version = "3.6"
 
 val targetJavaVersion = 8
 
@@ -70,4 +71,10 @@ tasks.processResources {
     filesMatching("config.yml") {
         filter(ReplaceTokens::class, mapOf("tokens" to props))
     }
+}
+
+// Add the option to run a server
+
+tasks.runServer {
+    minecraftVersion("1.21.5")
 }

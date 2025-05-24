@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "nexus.slime"
-version = "3.6"
+version = "3.6.1"
 
 val targetJavaVersion = 8
 

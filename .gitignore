@@ -3,3 +3,6 @@
 /build/
 /.idea/
 *.iml
+
+# Exclude run-paper server directory
+/run

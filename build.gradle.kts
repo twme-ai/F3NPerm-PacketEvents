@@ -3,60 +3,41 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     java
     idea
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "nexus.slime"
-version = "3.6.1"
+version = "4.0.0"
 
-val targetJavaVersion = 8
-
-// Dependencies
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
-    maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-releases/")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT")
-    compileOnly("io.netty:netty-all:4.1.90.Final")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
+    compileOnly("net.luckperms:api:5.5")
 
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
-    compileOnly("net.luckperms:api:5.4")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-// Set java version
 
 java {
-    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-
-    if (JavaVersion.current() < javaVersion) {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-        }
-    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.withType(JavaCompile::class) {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-        options.release.set(targetJavaVersion)
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(21)
 }
-
-// Set the right test framework
 
 tasks.test {
     useJUnitPlatform()
 }
-
-// Add version to plugin.yml
 
 tasks.processResources {
     val props = mapOf("version" to version)
@@ -73,8 +54,21 @@ tasks.processResources {
     }
 }
 
-// Add the option to run a server
+tasks.jar {
+    archiveBaseName.set("F3NPerm")
+    from("LICENSE") {
+        into("META-INF")
+        rename { "LICENSE-GPL-3.0-only.txt" }
+    }
+    from("LICENSES/MIT.txt") {
+        into("META-INF")
+        rename { "LICENSE-F3NPerm-MIT.txt" }
+    }
+    from("NOTICE") {
+        into("META-INF")
+    }
+}
 
 tasks.runServer {
-    minecraftVersion("1.21.5")
+    minecraftVersion("1.21.11")
 }

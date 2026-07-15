@@ -43,6 +43,7 @@ public class LuckPermsHook implements Hook {
     public void unregister(F3NPermPlugin plugin) {
         if (subscription != null) {
             subscription.close();
+            subscription = null;
         }
     }
 }

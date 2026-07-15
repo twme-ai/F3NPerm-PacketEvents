@@ -2,63 +2,52 @@ package nexus.slime.f3nperm;
 
 import nexus.slime.f3nperm.hooks.Hook;
 import nexus.slime.f3nperm.hooks.LuckPermsHook;
-import nexus.slime.f3nperm.provider.*;
-import org.bukkit.Bukkit;
+import nexus.slime.f3nperm.provider.PacketEventsProvider;
+import nexus.slime.f3nperm.provider.Provider;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
-public final class F3NPermPlugin extends JavaPlugin implements Listener {
+public final class F3NPermPlugin extends JavaPlugin {
     private final Hook[] hooks = new Hook[] {
             new LuckPermsHook()
     };
 
     private Provider provider;
+    private boolean providerRegistered;
     private Settings settings;
     private List<Hook> registeredHooks;
 
     @Override
     public void onLoad() {
-        BukkitVersion bukkitVersion = BukkitVersion.fromBukkitVersion();
-
-        if (bukkitVersion == null) {
-            String version = Bukkit.getServer().getBukkitVersion();
-            getLogger().warning("Could not recognize server version, proceed with caution! (Bukkit version: " + version + ")");
-        } else {
-            getLogger().info("Server version " + bukkitVersion + " detected");
-        }
-
         loadSettings();
-
-        provider = findProvider(bukkitVersion);
-
-        getLogger().info("Provider " + provider.getClass().getSimpleName() + " loaded!");
-
-        getLogger().info("Plugin loaded!");
+        provider = new PacketEventsProvider();
     }
 
     @Override
     public void onEnable() {
         F3NPermCommand f3nPermCommand = new F3NPermCommand(this);
-        getCommand("f3nperm").setExecutor(f3nPermCommand);
-        getCommand("f3nperm").setTabCompleter(f3nPermCommand);
+        PluginCommand command = Objects.requireNonNull(
+                getCommand("f3nperm"),
+                "f3nperm command is missing from plugin.yml"
+        );
+        command.setExecutor(f3nPermCommand);
+        command.setTabCompleter(f3nPermCommand);
 
         getServer().getPluginManager().registerEvents(new F3NPermListener(this), this);
 
-        try {
-            provider.register(this);
-        } catch (ProviderException e) {
-            getLogger().log(Level.SEVERE, "Could not register provider " + provider.getClass().getSimpleName() + "!", e);
-        }
+        provider.register(this);
+        providerRegistered = true;
 
         loadHooks();
 
-        getLogger().info("Plugin enabled!");
+        getLogger().info("F3NPerm enabled with PacketEvents");
     }
 
     @Override
@@ -69,13 +58,10 @@ public final class F3NPermPlugin extends JavaPlugin implements Listener {
             }
         }
 
-        try {
-            provider.unregister(this);
-        } catch (ProviderException e) {
-            getLogger().log(Level.SEVERE, "Could not unregister provider " + provider.getClass().getSimpleName() + "!", e);
+        if (providerRegistered) {
+            provider.unregister();
+            providerRegistered = false;
         }
-
-        getLogger().info("Plugin disabled!");
     }
 
     public void reloadPlugin() {
@@ -96,7 +82,7 @@ public final class F3NPermPlugin extends JavaPlugin implements Listener {
             settings = Settings.loadSettings(this, getDataFolder().toPath());
         } catch (IOException e) {
             getLogger().log(Level.SEVERE, "Error loading configuration!", e);
-            throw new RuntimeException();
+            throw new IllegalStateException("Could not load F3NPerm configuration", e);
         }
     }
 
@@ -109,53 +95,6 @@ public final class F3NPermPlugin extends JavaPlugin implements Listener {
                 registeredHooks.add(hook);
             }
         }
-    }
-
-    private Provider findProvider(BukkitVersion bukkitVersion) {
-        if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
-            if (settings.isUseProtocolLib()) {
-                return new ProtocolLibProvider();
-            }
-        }
-
-        // Just use the latest provider when we can't find a suitable one;
-        if (bukkitVersion == null || bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_21_3)) {
-            return new ReflectionProvider_1_21_3();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_20_5)) {
-            return new ReflectionProvider_1_20_5();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_20_2)) {
-            return new ReflectionProvider_1_20_2();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_20)) {
-            return new ReflectionProvider_1_20();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_19_4)) {
-            return new ReflectionProvider_1_19_4();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_19)) {
-            return new ReflectionProvider_1_19();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_18_2)) {
-            return new ReflectionProvider_1_18_2();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_18)) {
-            return new ReflectionProvider_1_18();
-        }
-
-        if (bukkitVersion.isGreaterOrEqualTo(BukkitVersion.V1_17)) {
-            return new ReflectionProvider_1_17();
-        }
-
-        return new ReflectionProvider_1_9();
     }
 
     public OpPermissionLevel getF3NPermPermissionLevel(Player player) {

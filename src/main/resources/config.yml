@@ -9,14 +9,9 @@
 # Config generated with plugin version: @version@
 #
 
-# Whether the plugin should attempt to use ProtocolLib for its functionality.
-# If ProtocolLib isn't found, the plugin will fall back to a native method.
-# WARNING: Changing this setting requires restart!
-use-protocollib: true
-
 # The op permission level that should be sent to the client (0 - 4).
 # To enable the client functionality, this should be set to at least 3.
-# More info: https://minecraft.fandom.com/wiki/Permission_level#Java_Edition
+# More info: https://minecraft.wiki/w/Permission_level#Java_Edition
 op-permission-level: 4
 
 # If this is set to true, the plugin will check for the "f3nperm.use" permission.

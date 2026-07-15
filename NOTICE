@@ -1,0 +1,16 @@
+F3NPerm PacketEvents
+Copyright (c) 2026 twme-ai
+
+This project is based on F3NPerm by RodneyMKay:
+https://github.com/SlimeNexus/F3NPerm
+
+The original F3NPerm source is licensed under the MIT License. The complete
+original copyright and permission notice is included in LICENSES/MIT.txt.
+
+The modifications in this repository integrate with PacketEvents, which is
+licensed under the GNU General Public License version 3:
+https://github.com/retrooper/packetevents
+
+PacketEvents is a required external runtime dependency. It is not copied into
+or bundled with the F3NPerm plugin jar. This derivative project is distributed
+under the GNU General Public License version 3 only (GPL-3.0-only); see LICENSE.

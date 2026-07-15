@@ -1,13 +1,14 @@
 main: nexus.slime.f3nperm.F3NPermPlugin
-api-version: 1.13 # Lowest possible api version for compatibility with 1.9+
+api-version: '1.21.11'
 
 name: F3NPerm
 version: ${version}
-authors: [Rodney_Mc_Kay]
-description: Allows to use Hotkey F3 + N with permissions
+authors: [Rodney_Mc_Kay, twme-ai]
+description: Allows the F3 + N hotkey to be controlled by permissions
 
+depend:
+  - packetevents
 softdepend:
-  - ProtocolLib
   - LuckPerms
 
 commands:

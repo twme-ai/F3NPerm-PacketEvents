@@ -30,16 +30,11 @@ public class Settings {
         return new Settings(config);
     }
 
-    private final boolean useProtocolLib;
     private final OpPermissionLevel opPermissionLevel;
     private final boolean enablePermissionCheck;
     private final Set<String> hooks;
 
     private Settings(FileConfiguration config) throws IOException {
-        // use-protocol-lib
-        useProtocolLib = config.getBoolean("use-protocollib", true);
-
-        // op-permission-level
         int opPermissionLevelInt = config.getInt("op-permission-level", OpPermissionLevel.ADMIN_COMMANDS.getLevel());
         opPermissionLevel = OpPermissionLevel.fromLevel(opPermissionLevelInt);
 
@@ -47,12 +42,9 @@ public class Settings {
             throw new IOException("OpPermissionLevel " + opPermissionLevelInt + " is not recognized!");
         }
 
-        // disable-permission-check
         enablePermissionCheck = config.getBoolean("enable-permission-check", false);
 
-        // hooks
-        hooks = new HashSet<>();
-        hooks.addAll(config.getStringList("hooks"));
+        hooks = new HashSet<>(config.getStringList("hooks"));
     }
 
     public boolean isEnablePermissionCheck() {
@@ -61,10 +53,6 @@ public class Settings {
 
     public OpPermissionLevel getOpPermissionLevel() {
         return opPermissionLevel;
-    }
-
-    public boolean isUseProtocolLib() {
-        return useProtocolLib;
     }
 
     public Set<String> getHooks() {

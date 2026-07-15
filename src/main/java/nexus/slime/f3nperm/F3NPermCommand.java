@@ -1,16 +1,15 @@
 package nexus.slime.f3nperm;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
 
 public final class F3NPermCommand implements CommandExecutor, TabCompleter {
     private final F3NPermPlugin plugin;
@@ -27,7 +26,7 @@ public final class F3NPermCommand implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("reload")) {
             plugin.reloadPlugin();
-            sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
+            sender.sendMessage(Component.text("Plugin successfully reloaded!", NamedTextColor.GREEN));
             return true;
         }
 
@@ -37,19 +36,22 @@ public final class F3NPermCommand implements CommandExecutor, TabCompleter {
                     plugin.getProvider().update(player);
                 }
 
-                sender.sendMessage(ChatColor.GREEN + "Updated all online players");
+                sender.sendMessage(Component.text("Updated all online players", NamedTextColor.GREEN));
                 return true;
             }
 
             Player target = plugin.getServer().getPlayerExact(args[1]);
 
             if (target == null) {
-                sender.sendMessage(ChatColor.RED + "A player named " + args[1] + " was not found!");
+                sender.sendMessage(Component.text(
+                        "A player named " + args[1] + " was not found!",
+                        NamedTextColor.RED
+                ));
                 return true;
             }
 
             plugin.getProvider().update(target);
-            sender.sendMessage(ChatColor.GREEN + "Updated player " + args[1]);
+            sender.sendMessage(Component.text("Updated player " + args[1], NamedTextColor.GREEN));
             return true;
         }
 
@@ -61,22 +63,23 @@ public final class F3NPermCommand implements CommandExecutor, TabCompleter {
         List<String> candidates = null;
 
         if (args.length == 1) {
-            candidates = Arrays.asList("reload", "forceupdate");
+            candidates = List.of("reload", "forceupdate");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("forceupdate")) {
             candidates = plugin.getServer().getOnlinePlayers().stream()
                     .map(Player::getName)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         if (candidates == null) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         return candidates.stream()
-                .filter(c -> c.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .filter(c -> c.toLowerCase(Locale.ROOT)
+                        .startsWith(args[args.length - 1].toLowerCase(Locale.ROOT)))
                 .sorted()
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -13,9 +13,9 @@ public enum OpPermissionLevel {
         this.level = level;
     }
 
-    public byte toStatusByte() {
+    public int toStatus() {
         final int baseOffset = 24;
-        return (byte) (level + baseOffset);
+        return level + baseOffset;
     }
 
     public int getLevel() {
@@ -34,9 +34,9 @@ public enum OpPermissionLevel {
         return null;
     }
 
-    public static OpPermissionLevel fromStatusByte(byte statusByte) {
+    public static OpPermissionLevel fromStatus(int status) {
         for (OpPermissionLevel value : values) {
-            if (value.toStatusByte() == statusByte) {
+            if (value.toStatus() == status) {
                 return value;
             }
         }

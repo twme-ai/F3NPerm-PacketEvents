@@ -16,7 +16,7 @@ public class F3NPermListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Since the op package is sent so early in the login process
+        // Since the op packet is sent so early in the login process
         // (before the permission plugin is initialized). After everything
         // is initialized, we check again and update the player.
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

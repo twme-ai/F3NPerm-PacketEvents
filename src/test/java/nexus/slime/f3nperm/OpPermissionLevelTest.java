@@ -3,7 +3,9 @@ package nexus.slime.f3nperm;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OpPermissionLevelTest {
     @Test
@@ -22,5 +24,13 @@ class OpPermissionLevelTest {
     void rejectsUnknownPermissionLevelsAndStatuses() {
         assertNull(OpPermissionLevel.fromLevel(5));
         assertNull(OpPermissionLevel.fromStatus(29));
+    }
+
+    @Test
+    void requiresPermissionLevelTwoForGameModeSwitcher() {
+        assertFalse(OpPermissionLevel.NO_PERMISSIONS.allowsGameModeSwitcher());
+        assertFalse(OpPermissionLevel.ACCESS_SPAWN.allowsGameModeSwitcher());
+        assertTrue(OpPermissionLevel.WORLD_COMMANDS.allowsGameModeSwitcher());
+        assertTrue(OpPermissionLevel.ADMIN_COMMANDS.allowsGameModeSwitcher());
     }
 }

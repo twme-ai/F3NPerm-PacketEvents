@@ -10,7 +10,7 @@
 #
 
 # The op permission level that should be sent to the client (0 - 4).
-# To enable the client functionality, this should be set to at least 3.
+# To enable the F3 + N and F3 + F4 client functionality, set this to at least 2.
 # More info: https://minecraft.wiki/w/Permission_level#Java_Edition
 op-permission-level: 4
 

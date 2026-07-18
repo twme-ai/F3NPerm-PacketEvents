@@ -108,6 +108,10 @@ public final class F3NPermPlugin extends JavaPlugin {
         return OpPermissionLevel.NO_PERMISSIONS;
     }
 
+    public boolean canUseGameModeSwitcher(Player player) {
+        return getF3NPermPermissionLevel(player).allowsGameModeSwitcher();
+    }
+
     public Provider getProvider() {
         return provider;
     }

@@ -22,6 +22,10 @@ public enum OpPermissionLevel {
         return level;
     }
 
+    public boolean allowsGameModeSwitcher() {
+        return level >= WORLD_COMMANDS.level;
+    }
+
     private static final OpPermissionLevel[] values = values();
 
     public static OpPermissionLevel fromLevel(int level) {

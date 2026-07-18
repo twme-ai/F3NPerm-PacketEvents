@@ -5,7 +5,7 @@
 F3NPerm controls access to the Minecraft client hotkeys unlocked by the
 operator permission-level entity status packet, including F3 + N. This fork
 replaces the original ProtocolLib and version-specific NMS/Netty providers with
-PacketEvents.
+PacketEvents and handles F3 + F4 game mode changes for authorized players.
 
 ## Requirements
 
@@ -22,7 +22,7 @@ versions.
 
 1. Install Paper 1.21.11.
 2. Install PacketEvents 2.13.0 or newer in the server's `plugins` directory.
-3. Place `F3NPerm-4.0.0.jar` in the `plugins` directory.
+3. Place `F3NPerm-4.0.1.jar` in the `plugins` directory.
 4. Restart the server.
 
 PacketEvents is a required external plugin and is not bundled in the F3NPerm
@@ -35,13 +35,18 @@ jar.
 - `f3nperm.admin`: allows `/f3nperm reload` and `/f3nperm forceupdate`.
 - `f3nperm.*`: grants both permissions.
 
+With `enable-permission-check: false` (the default), every player receives the
+configured permission level and may use F3 + F4. Set it to `true` to require
+`f3nperm.use` or operator status. The configured `op-permission-level` must be
+at least `2` for the client game mode switcher.
+
 ## Building
 
 ```bash
 ./gradlew build
 ```
 
-The plugin jar is written to `build/libs/F3NPerm-4.0.0.jar`.
+The plugin jar is written to `build/libs/F3NPerm-4.0.1.jar`.
 
 ## Provenance
 

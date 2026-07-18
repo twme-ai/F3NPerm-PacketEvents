@@ -4,7 +4,7 @@ api-version: '1.13'
 name: F3NPerm
 version: ${version}
 authors: [Rodney_Mc_Kay, twme-ai]
-description: Allows the F3 + N hotkey to be controlled by permissions
+description: Controls the F3 + N and F3 + F4 hotkeys with permissions
 
 depend:
   - packetevents
